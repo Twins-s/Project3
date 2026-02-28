@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональный сайт | Никита Клонин</title>
+    <style>
+        /* Базовые стили для аккуратного отображения */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-left: 5px solid #3498db;
+            padding-left: 10px;
+        }
+
+        .about p {
+            text-align: justify;
+        }
+
+        .interests ul {
+            list-style-type: square;
+            margin-left: 20px;
+        }
+
+        .interests li {
+            margin-bottom: 8px;
+        }
+
+        .image-block {
+            text-align: center;
+        }
+
+        .image-block img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .image-block figcaption {
+            margin-top: 8px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+
+        .link a {
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .link a:hover {
+            background: #2980b9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Никита Клонин</h1>
+            <p>Начинающий python-разработчик</p>
+        </header>
+
+        <main>
+            <section class="about">
+                <h2>О себе</h2>
+                <p>Привет! Меня зовут Никита, мне 20 лет. Я студент ПензГТУ. Увлекаюсь программированием, комьютерными играми, спортом. В свободное время изучаю новые технологии и совершенствую навыки Python. Стремлюсь стать python-разработчиком.</p>
+            </section>
+
+            <section class="interests">
+                <h2>Интересы и навыки</h2>
+                <ul>
+                    <li>Python — разработка скриптов, автоматизация, бэкенд-логика</li>
+                    <li>Изучение нейросетей и глубокого обучения (TensorFlow, PyTorch)</li>
+                    <li>Основы искусственного интеллекта, алгоритмы машинного обучения</li>
+                    <li>Обработка и анализ данных (Pandas, NumPy, Matplotlib)</li>
+                    <li>Git — контроль версий, работа в команде</li>
+                </ul>
+            </section>
+
+            <section class="image-block">
+                <h2>Моё рабочее место</h2>
+                <figure>
+                    <img src="my_workspace.jpg" alt="Моё рабочее место">
+                    <figcaption>Так выглядит моё рабочее место</figcaption>
+                </figure>
+            </section>
+
+            <section class="link">
+                <h2>Полезный ресурс</h2>
+                <p>Рекомендую заглянуть на <a href="https://developer.mozilla.org/ru/" target="_blank" rel="noopener">MDN Web Docs</a> — лучший справочник для веб-разработчика.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Никита Клонин.</p>
+        </footer>
+    </div>
+</body>
+</html>
