@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Крестики-нолики</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(145deg, #f5f7fa 0%, #e9ecf2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .game-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      padding: 30px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      color: #2c3e50;
+      font-weight: 400;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .size-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f3f8;
+      padding: 5px 15px;
+      border-radius: 40px;
+    }
+
+    .size-selector label {
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    #sizeInput {
+      width: 70px;
+      padding: 8px 10px;
+      border: 2px solid #d0dae8;
+      border-radius: 20px;
+      font-size: 1rem;
+      text-align: center;
+      font-weight: bold;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    #sizeInput:focus {
+      border-color: #3498db;
+    }
+
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    button:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    }
+
+    .status {
+      font-size: 1.5rem;
+      margin: 15px 0 20px;
+      min-height: 2.5rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .board-wrapper {
+      overflow-x: auto;
+      margin-bottom: 10px;
+      padding: 5px;
+    }
+
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+    }
+
+    td {
+      width: 70px;
+      height: 70px;
+      border: 3px solid #bdc3c7;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 2.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      background-color: #ffffff;
+      user-select: none;
+    }
+
+    /* Убираем внешние границы для красоты */
+    table {
+      border: none;
+    }
+    td:first-child {
+      border-left: none;
+    }
+    td:last-child {
+      border-right: none;
+    }
+    tr:first-child td {
+      border-top: none;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td:hover {
+      background-color: #f8fafc;
+    }
+
+    td.X {
+      color: #e74c3c;
+    }
+
+    td.O {
+      color: #2980b9;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding: 0 10px;
+    }
+
+    .turn-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.2rem;
+    }
+
+    .symbol-badge {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      font-weight: bold;
+      background: #ecf0f1;
+    }
+
+    .symbol-badge.X {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .symbol-badge.O {
+      background: #2980b9;
+      color: white;
+    }
+
+    #restartBtn {
+      background: #7f8c8d;
+      box-shadow: none;
+    }
+
+    #restartBtn:hover {
+      background: #6c7a7a;
+    }
+
+    /* Для маленьких экранов уменьшаем ячейки */
+    @media (max-width: 600px) {
+      td {
+        width: 55px;
+        height: 55px;
+        font-size: 2rem;
+      }
+      .game-container {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <h1>✖ Крестики-нолики ○</h1>
+
+  <div class="controls">
+    <div class="size-selector">
+      <label for="sizeInput">Размер поля:</label>
+      <input type="number" id="sizeInput" min="3" max="8" value="3">
+    </div>
+    <button id="newGameBtn">Новая игра</button>
+  </div>
+
+  <div class="status" id="statusMessage">Ход игрока X</div>
+
+  <div class="board-wrapper">
+    <table id="board"></table>
+  </div>
+
+  <div class="game-info">
+    <div class="turn-indicator">
+      <span>Сейчас ходит:</span>
+      <span id="currentPlayerSymbol" class="symbol-badge X">X</span>
+    </div>
+    <button id="restartBtn">↻ Заново</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // DOM элементы
+    const boardElement = document.getElementById('board');
+    const statusMessage = document.getElementById('statusMessage');
+    const currentPlayerSymbolSpan = document.getElementById('currentPlayerSymbol');
+    const sizeInput = document.getElementById('sizeInput');
+    const newGameBtn = document.getElementById('newGameBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // Состояние игры
+    let board = [];                // двумерный массив: '', 'X', 'O'
+    let currentPlayer = 'X';       // 'X' или 'O'
+    let gameActive = true;
+    let boardSize = 3;             // текущий размер
+
+    // === Инициализация / перезапуск ===
+    function initBoard(size) {
+      boardSize = size;
+      board = Array(size).fill().map(() => Array(size).fill(''));
+      currentPlayer = 'X';
+      gameActive = true;
+      updateStatusMessage(`Ход игрока ${currentPlayer}`);
+      updateCurrentPlayerDisplay();
+      renderBoard();
+    }
+
+    // Отрисовка таблицы по массиву board
+    function renderBoard() {
+      // Очищаем таблицу
+      boardElement.innerHTML = '';
+
+      for (let r = 0; r < boardSize; r++) {
+        const tr = document.createElement('tr');
+        for (let c = 0; c < boardSize; c++) {
+          const td = document.createElement('td');
+          td.textContent = board[r][c];
+          // Добавляем класс для цвета, если есть символ
+          if (board[r][c] === 'X') {
+            td.classList.add('X');
+          } else if (board[r][c] === 'O') {
+            td.classList.add('O');
+          }
+          // Сохраняем координаты в data-атрибутах
+          td.dataset.row = r;
+          td.dataset.col = c;
+          td.addEventListener('click', handleCellClick);
+          tr.appendChild(td);
+        }
+        boardElement.appendChild(tr);
+      }
+    }
+
+    // Обработчик клика по ячейке
+    function handleCellClick(event) {
+      if (!gameActive) return;
+
+      const td = event.currentTarget;
+      const row = parseInt(td.dataset.row);
+      const col = parseInt(td.dataset.col);
+
+      // Если ячейка уже занята
+      if (board[row][col] !== '') return;
+
+      // Совершаем ход
+      makeMove(row, col);
+    }
+
+    function makeMove(row, col) {
+      // Записываем ход
+      board[row][col] = currentPlayer;
+
+      // Перерисовываем только эту ячейку для производительности,
+      // но проще перерисовать всю доску — она небольшая.
+      renderBoard();
+
+      // Проверяем победу или ничью
+      if (checkWin(row, col, currentPlayer)) {
+        gameActive = false;
+        statusMessage.textContent = `Победил игрок ${currentPlayer}!`;
+        updateCurrentPlayerDisplay();
+        return;
+      }
+
+      if (isBoardFull()) {
+        gameActive = false;
+        statusMessage.textContent = `Ничья!`;
+        updateCurrentPlayerDisplay();
+        return;
+      }
+
+      // Меняем игрока
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      updateStatusMessage(`Ход игрока ${currentPlayer}`);
+      updateCurrentPlayerDisplay();
+    }
+
+    // Проверка победы: проверяем строку, столбец и диагонали, проходящие через (row, col)
+    function checkWin(row, col, player) {
+      // Проверка строки row
+      if (board[row].every(cell => cell === player)) return true;
+
+      // Проверка столбца col
+      if (board.every(rowArr => rowArr[col] === player)) return true;
+
+      // Проверка главной диагонали (если клетка на ней)
+      if (row === col) {
+        let win = true;
+        for (let i = 0; i < boardSize; i++) {
+          if (board[i][i] !== player) {
+            win = false;
+            break;
+          }
+        }
+        if (win) return true;
+      }
+
+      // Проверка побочной диагонали (если клетка на ней)
+      if (row + col === boardSize - 1) {
+        let win = true;
+        for (let i = 0; i < boardSize; i++) {
+          if (board[i][boardSize - 1 - i] !== player) {
+            win = false;
+            break;
+          }
+        }
+        if (win) return true;
+      }
+
+      return false;
+    }
+
+    // Проверка на заполненность доски
+    function isBoardFull() {
+      for (let r = 0; r < boardSize; r++) {
+        for (let c = 0; c < boardSize; c++) {
+          if (board[r][c] === '') return false;
+        }
+      }
+      return true;
+    }
+
+    // Вспомогательные функции для обновления интерфейса
+    function updateStatusMessage(text) {
+      statusMessage.textContent = text;
+    }
+
+    function updateCurrentPlayerDisplay() {
+      currentPlayerSymbolSpan.textContent = currentPlayer;
+      currentPlayerSymbolSpan.className = `symbol-badge ${currentPlayer}`;
+    }
+
+    // === Обработчики событий ===
+    function startNewGame() {
+      let newSize = parseInt(sizeInput.value, 10);
+      // Валидация
+      if (isNaN(newSize) || newSize < 3) {
+        newSize = 3;
+        sizeInput.value = 3;
+      }
+      if (newSize > 10) { // Ограничим сверху, чтобы не сломать вёрстку
+        newSize = 10;
+        sizeInput.value = 10;
+      }
+      initBoard(newSize);
+    }
+
+    function restartCurrentGame() {
+      // Перезапуск с тем же размером поля
+      initBoard(boardSize);
+    }
+
+    // Привязываем события
+    newGameBtn.addEventListener('click', startNewGame);
+    restartBtn.addEventListener('click', restartCurrentGame);
+
+    // Дополнительно: разрешаем начать новую игру по Enter в поле размера
+    sizeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        startNewGame();
+      }
+    });
+
+    // Запускаем игру с начальным размером 3x3
+    initBoard(3);
+  })();
+</script>
+</body>
+</html>
