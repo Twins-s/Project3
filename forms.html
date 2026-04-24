@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма регистрации - проверка доступа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 480px;
+            padding: 32px 28px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 28px;
+            border-left: 3px solid #764ba2;
+            padding-left: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        /* Общие стили для текстового и числового полей — они выглядят одинаково */
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            transition: all 0.2s;
+            outline: none;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+        }
+
+        /* Убираем стрелки (спиннеры) у поля number */
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            background: linear-gradient(95deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: scale(0.98);
+            background: linear-gradient(95deg, #5a67d8, #6b46a0);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .result-area {
+            margin-top: 28px;
+            padding: 18px 16px;
+            border-radius: 24px;
+            background: #f7fafc;
+            border-left: 5px solid;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .result-area.error {
+            background: #fff5f5;
+            border-left-color: #e53e3e;
+            color: #c53030;
+        }
+
+        .result-area.success {
+            background: #f0fff4;
+            border-left-color: #38a169;
+            color: #276749;
+        }
+
+        .result-area.warning {
+            background: #fffaf0;
+            border-left-color: #dd6b20;
+            color: #c05621;
+        }
+
+        .result-area.info {
+            background: #ebf4ff;
+            border-left-color: #3182ce;
+            color: #2c5282;
+        }
+
+        hr {
+            margin: 16px 0 8px;
+            border: none;
+            height: 1px;
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>📋 Проверка доступа</h1>
+    <div class="subtitle">Введите данные — система определит уровень доступа</div>
+
+    <div class="form-group">
+        <label for="username">👤 Имя пользователя</label>
+        <input type="text" id="username" placeholder="Например: Александр" autocomplete="off">
+    </div>
+
+    <div class="form-group">
+        <label for="age">🎂 Возраст (полных лет)</label>
+        <input type="number" id="age" placeholder="от 1 до 100" min="1" step="1">
+    </div>
+
+    <button id="checkBtn">🔍 Проверить</button>
+
+    <div id="resultMessage" class="result-area info">
+        ⚡ Здесь появится результат проверки
+    </div>
+    <hr>
+</div>
+
+<script>
+    const userNameInput = document.getElementById('username');
+    const ageInput = document.getElementById('age');
+    const checkButton = document.getElementById('checkBtn');
+    const resultDiv = document.getElementById('resultMessage');
+
+    function showMessage(text, type = 'info') {
+        resultDiv.textContent = text;
+        resultDiv.classList.remove('error', 'success', 'warning', 'info');
+        if (type === 'error') {
+            resultDiv.classList.add('error');
+        } else if (type === 'success') {
+            resultDiv.classList.add('success');
+        } else if (type === 'warning') {
+            resultDiv.classList.add('warning');
+        } else {
+            resultDiv.classList.add('info');
+        }
+    }
+
+    function validateAndProcess() {
+        let userName = userNameInput.value;
+        const ageValue = ageInput.value;
+
+        if (!userName || userName.trim() === '') {
+            showMessage('❌ Ошибка: имя не может быть пустым. Пожалуйста, введите имя.', 'error');
+            return;
+        }
+
+        const cleanName = userName.trim();
+
+        if (ageValue === '') {
+            showMessage('❌ Ошибка: введите возраст (число больше 0).', 'error');
+            return;
+        }
+
+        const ageNumber = Number(ageValue);
+        if (isNaN(ageNumber) || !Number.isFinite(ageNumber)) {
+            showMessage('❌ Ошибка: возраст должен быть числом.', 'error');
+            return;
+        }
+
+        if (ageNumber <= 0) {
+            showMessage('❌ Ошибка: возраст должен быть больше 0 (положительное число).', 'error');
+            return;
+        }
+
+        let accessMessage = '';
+        let messageType = 'info';
+
+        if (ageNumber < 18) {
+            accessMessage = `🔞 ${cleanName}, вам ${ageNumber} лет. Доступ ограничен.`;
+            messageType = 'warning';
+        } else if (ageNumber >= 18 && ageNumber <= 65) {
+            accessMessage = `✅ ${cleanName}, вам ${ageNumber} лет. Доступ разрешен.`;
+            messageType = 'success';
+        } else {
+            accessMessage = `👵 ${cleanName}, вам ${ageNumber} лет. Рекомендуется упрощенный режим.`;
+            messageType = 'info';
+        }
+
+        showMessage(accessMessage, messageType);
+    }
+
+    checkButton.addEventListener('click', validateAndProcess);
+
+    function handleEnterPress(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            validateAndProcess();
+        }
+    }
+
+    userNameInput.addEventListener('keypress', handleEnterPress);
+    ageInput.addEventListener('keypress', handleEnterPress);
+
+    userNameInput.focus();
+</script>
+</body>
+</html>
